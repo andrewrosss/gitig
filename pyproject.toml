@@ -1,0 +1,44 @@
+[tool.poetry]
+name = "gitig"
+version = "0.1.0"
+description = "Generate .gitignore files from the command-line"
+authors = ["Andrew Ross <andrew.ross.mail@gmail.com>"]
+license = "MIT"
+
+readme = "README.md"
+
+keywords = ["cli", "git", "gitignore", "config"]
+
+homepage = "https://github.com/andrewrosss/gitig"
+repository = "https://github.com/andrewrosss/gitig"
+documentation = "https://github.com/andrewrosss/gitig"
+
+classifiers = [
+    "Programming Language :: Python :: 3.0",
+    "License :: OSI Approved :: MIT License",
+    "Intended Audience :: Developers",
+    "Environment :: Console",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: User Interfaces",
+    "Topic :: Utilities",
+    "Typing :: Typed",
+]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+
+[tool.poetry.dev-dependencies]
+black = "^22.3.0"
+flake8 = "^4.0.1"
+pylint = "^2.13.4"
+reorder-python-imports = "^3.0.1"
+bump2version = "^1.0.1"
+pre-commit = "^2.18.1"
+
+[tool.poetry.scripts]
+gi = 'gitig:cli'
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
