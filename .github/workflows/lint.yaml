@@ -1,0 +1,38 @@
+name: Code Style
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: "Lint Code Base"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+
+      - name: Install Poetry
+        run: |
+          export POETRY_VERSION=1.1.12
+          curl -sSL https://install.python-poetry.org | python3 -
+          export PATH="${HOME}/.local/bin:$PATH"
+          echo "${PATH}" >> "${GITHUB_PATH}"
+          poetry config virtualenvs.create false
+
+      - name: Install dependencies
+        run: |
+          poetry install --no-interaction
+
+      - name: Lint with flake8
+        run: |
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --count --max-complexity=10 --max-line-length=88 --statistics
+
+      - name: Check with black
+        run: |
+          black . --check --diff
