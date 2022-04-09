@@ -1,16 +1,20 @@
 from __future__ import annotations
 
 import argparse
+import difflib
 import sys
 from pydoc import pager
 from typing import NoReturn
 from typing import Sequence
+from urllib.error import HTTPError
 from urllib.parse import urljoin
 from urllib.request import Request
 from urllib.request import urlopen
 
 
 __version__ = "1.0.0"
+
+REQUEST_TIMEOUT = 10  # seconds
 
 
 class Defaults:
@@ -76,13 +80,30 @@ def handler(args: argparse.Namespace) -> int:
             print(_unknown_completion_shell_msg(shell))
             return 1
     elif len(templates) == 0:
-        text = "\n".join(list_templates())
-        if no_pager:
-            print(text, file=sys.stdout)
-        else:
-            pager(text)
+        try:
+            text = "\n".join(list_templates())
+        except HTTPError:
+            print("Connection error", file=sys.stderr)
+            return 1
+
+        print(text, file=sys.stdout) if no_pager else pager(text)
     else:
-        text = create(templates)
+        try:
+            text = create(templates)
+        except HTTPError:
+            known_templates = set(list_templates())
+            unknown_templates = known_templates - set(templates)
+            if unknown_templates:
+                msg = _unknown_templates_msg(templates, known_templates)  # type: ignore
+            else:
+                msg = "Application Error"
+            print(msg, file=sys.stderr)
+            return 1
+        except Exception:
+            print("Application error", file=sys.stderr)
+            raise
+            # return 1
+
         print(text, file=sys.stdout)
 
     return 0
@@ -122,15 +143,32 @@ def _create_endpoint(templates: Sequence[str], *, base: str | None = None) -> st
     return urljoin(base, url)
 
 
-def _GET(url: str) -> bytes:
+def _GET(url: str, timeout: float = 10.0) -> bytes:
     headers = {"User-Agent": "Mozilla/5.0"}
     request = Request(url, headers=headers)
-    with urlopen(request) as response:
+    with urlopen(request, timeout=timeout) as response:
         return response.read()
 
 
 def _unknown_completion_shell_msg(shell: str):
     return f"Unknown shell {shell!r}. Expected one of {Defaults.completion_shells!r}"
+
+
+def _unknown_templates_msg(
+    templates: Sequence[str],
+    known_templates: Sequence[str] | None = None,
+) -> str:
+    lines = ["Encountered unknown templates"]
+    if known_templates:
+        for template in templates:
+            if template in known_templates:
+                continue
+            line = f"- {template}"
+            matches = difflib.get_close_matches(template, known_templates)
+            if len(matches) > 0:
+                line += f" (suggestions: {', '.join(matches)})"
+            lines.append(line)
+    return "\n".join(lines)
 
 
 _BASH_COMPLETION_TEMPLATE = """\
