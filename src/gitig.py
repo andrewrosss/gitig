@@ -26,14 +26,14 @@ def cli() -> NoReturn:
     raise SystemExit(main())
 
 
-def main() -> int | str:
+def main(args: Sequence[str] | None = None) -> int | str:
     parser = create_parser()
-    args = parser.parse_args()
+    namespace = parser.parse_args(args)
 
     try:
-        return args.handler(args)
+        return namespace.handler(namespace)
     except Exception as e:
-        if args.debug:
+        if namespace.debug:
             raise
         else:
             return str(e)
@@ -76,10 +76,10 @@ def create_parser(
     return parser
 
 
-def handler(args: argparse.Namespace) -> int:
-    shell: str | None = args.completion
-    templates: list[str] = args.template
-    no_pager: bool = args.no_pager
+def handler(namespace: argparse.Namespace) -> int:
+    shell: str | None = namespace.completion
+    templates: list[str] = namespace.template
+    no_pager: bool = namespace.no_pager
 
     if shell:
         text = generate_completion_str(shell)
