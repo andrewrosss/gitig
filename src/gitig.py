@@ -99,7 +99,7 @@ def create(templates: Sequence[str]) -> str:
         res = _GET(_create_endpoint(templates))
     except HTTPError as e:
         known_templates = list_templates()
-        unknown_templates = set(known_templates) - set(templates)
+        unknown_templates = set(templates) - set(known_templates)
         if unknown_templates:
             msg = _unknown_templates_msg(templates, known_templates)
         else:
