@@ -12,7 +12,7 @@ from urllib.request import Request
 from urllib.request import urlopen
 
 
-__version__ = "1.1.0"
+__version__ = "22.4.0"
 
 REQUEST_TIMEOUT = 10  # seconds
 

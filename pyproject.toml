@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "gitig"
-version = "1.1.0"
+version = "22.4.0"
 description = "Generate .gitignore files from the command-line"
 authors = ["Andrew Ross <andrew.ross.mail@gmail.com>"]
 license = "MIT"
