@@ -26,15 +26,17 @@ def cli() -> NoReturn:
     raise SystemExit(main())
 
 
-def main() -> int:
+def main() -> int | str:
     parser = create_parser()
     args = parser.parse_args()
 
-    if hasattr(args, "handler"):
+    try:
         return args.handler(args)
-
-    parser.print_help()
-    return 1
+    except Exception as e:
+        if args.debug:
+            raise
+        else:
+            return str(e)
 
 
 def create_parser(
@@ -60,6 +62,13 @@ def create_parser(
         action="store_true",
         help="Write template list to stdout. By default, this program attempts "
         "to paginate the list of available templates for easier reading.",
+    )
+    parser.add_argument(
+        "-d",
+        "--debug",
+        action="store_true",
+        default=False,
+        help="Increase program verbosity.",
     )
 
     parser.set_defaults(handler=handler)
@@ -89,7 +98,7 @@ def list_templates() -> list[str]:
     try:
         res = _GET(_list_endpoint())
     except Exception as e:
-        raise RuntimeError("Failed to fetch available templates") from e
+        raise ApplicationError("Failed to fetch available templates") from e
 
     return res.decode("utf8").replace(",", "\n").split()
 
@@ -99,14 +108,9 @@ def create(templates: Sequence[str]) -> str:
         res = _GET(_create_endpoint(templates))
     except HTTPError as e:
         known_templates = list_templates()
-        unknown_templates = set(templates) - set(known_templates)
-        if unknown_templates:
-            msg = _unknown_templates_msg(templates, known_templates)
-        else:
-            msg = "Failed to create .gitignore"
-        raise RuntimeError(msg) from e
+        raise TemplateNotFoundError(templates, known_templates) from e
     except Exception as e:
-        raise RuntimeError("Failed to create .gitignore") from e
+        raise ApplicationError("Failed to create .gitignore") from e
 
     return res.decode()
 
@@ -117,7 +121,7 @@ def generate_completion_str(shell: str) -> str:
         return completion_fn()
     except KeyError:
         msg = _unknown_completion_shell_msg(shell)
-        raise RuntimeError(msg)
+        raise ApplicationError(msg)
 
 
 def bash_completion() -> str:
@@ -151,6 +155,28 @@ def _GET(url: str, timeout: float = 10.0) -> bytes:
         return response.read()
 
 
+class ApplicationError(Exception):
+    """Generic exception type for this package to use"""
+
+
+class TemplateNotFoundError(ApplicationError):
+    def __init__(
+        self,
+        templates: Sequence[str],
+        known_templates: Sequence[str] | None = None,
+    ):
+        self.templates = templates
+        self.known_templates = known_templates or {}
+
+        unknown_templates = set(self.templates) - set(self.known_templates)
+        if unknown_templates:
+            self.msg = _unknown_templates_msg(templates, known_templates)
+        else:
+            self.msg = "Failed to create .gitignore"
+
+        super().__init__(self.msg)
+
+
 def _unknown_completion_shell_msg(shell: str):
     return f"Unknown shell {shell!r}. Expected one of {Defaults.completion_shells!r}"
 
@@ -159,7 +185,7 @@ def _unknown_templates_msg(
     templates: Sequence[str],
     known_templates: Sequence[str] | None = None,
 ) -> str:
-    lines = ["Encountered unknown templates"]
+    lines = ["Encountered unknown templates:"]
     if known_templates:
         for template in templates:
             if template in known_templates:
@@ -191,6 +217,7 @@ complete -c gi -s v -l version -d 'Print a short version string and exit'
 complete -c gi -l no-pager -d 'Do not pipe output into a pager'
 complete -c gi -l completion -a '{all_shells}' -d 'Generate shell completion file'
 """
+
 
 if __name__ == "__main__":
     cli()
