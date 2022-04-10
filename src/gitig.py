@@ -73,50 +73,51 @@ def handler(args: argparse.Namespace) -> int:
     no_pager: bool = args.no_pager
 
     if shell:
-        try:
-            completion_fn = globals()[f"{shell}_completion"]
-            print(completion_fn(), file=sys.stdout)
-        except KeyError:
-            print(_unknown_completion_shell_msg(shell))
-            return 1
+        text = generate_completion_str(shell)
+        print(text, file=sys.stdout)
     elif len(templates) == 0:
-        try:
-            text = "\n".join(list_templates())
-        except HTTPError:
-            print("Connection error", file=sys.stderr)
-            return 1
-
+        text = "\n".join(list_templates())
         print(text, file=sys.stdout) if no_pager else pager(text)
     else:
-        try:
-            text = create(templates)
-        except HTTPError:
-            known_templates = set(list_templates())
-            unknown_templates = known_templates - set(templates)
-            if unknown_templates:
-                msg = _unknown_templates_msg(templates, known_templates)  # type: ignore
-            else:
-                msg = "Application Error"
-            print(msg, file=sys.stderr)
-            return 1
-        except Exception:
-            print("Application error", file=sys.stderr)
-            raise
-            # return 1
-
+        text = create(templates)
         print(text, file=sys.stdout)
 
     return 0
 
 
 def list_templates() -> list[str]:
-    res = _GET(_list_endpoint())
-    return res.decode("utf8").replace("\n", ",").split(",")
+    try:
+        res = _GET(_list_endpoint())
+    except Exception as e:
+        raise RuntimeError("Failed to fetch available templates") from e
+
+    return res.decode("utf8").replace(",", "\n").split()
 
 
 def create(templates: Sequence[str]) -> str:
-    res = _GET(_create_endpoint(templates))
+    try:
+        res = _GET(_create_endpoint(templates))
+    except HTTPError as e:
+        known_templates = list_templates()
+        unknown_templates = set(known_templates) - set(templates)
+        if unknown_templates:
+            msg = _unknown_templates_msg(templates, known_templates)
+        else:
+            msg = "Failed to create .gitignore"
+        raise RuntimeError(msg) from e
+    except Exception as e:
+        raise RuntimeError("Failed to create .gitignore") from e
+
     return res.decode()
+
+
+def generate_completion_str(shell: str) -> str:
+    try:
+        completion_fn = globals()[f"{shell}_completion"]
+        return completion_fn()
+    except KeyError:
+        msg = _unknown_completion_shell_msg(shell)
+        raise RuntimeError(msg)
 
 
 def bash_completion() -> str:
