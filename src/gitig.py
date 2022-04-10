@@ -164,12 +164,18 @@ def _unknown_templates_msg(
         for template in templates:
             if template in known_templates:
                 continue
-            line = f"- {template}"
-            matches = difflib.get_close_matches(template, known_templates)
+            line = f"- No available template with the name {template!r}."
+            matches = difflib.get_close_matches(template, known_templates, 5)
             if len(matches) > 0:
-                line += f" (suggestions: {', '.join(matches)})"
+                line += f" Did you mean {_oxfordcomma(matches, 'or')}?"
             lines.append(line)
     return "\n".join(lines)
+
+
+def _oxfordcomma(entries: Sequence[str], conjunction: str = "and"):
+    if len(entries) <= 2:
+        return f" {conjunction} ".join(entries)
+    return f"{', '.join(entries[:-1])}, {conjunction} {entries[-1]}"
 
 
 _BASH_COMPLETION_TEMPLATE = """\
