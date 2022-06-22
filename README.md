@@ -14,7 +14,7 @@ gi python > .gitignore
 
 ### With `pipx`
 
-`gitig` is intended to be used as an **end-user command-line application** (i.e. not as a package's dependecy). The easiest way to get started is with `pipx`:
+`gitig` is intended to be used as an **end-user command-line application** (i.e. not as a package's dependency). The easiest way to get started is with `pipx`:
 
 ```bash
 pipx install gitig
