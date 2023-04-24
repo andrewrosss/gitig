@@ -1,0 +1,34 @@
+[package]
+name = "gitig-rs"
+version = "22.4.0"
+edition = "2021"
+description = "Generate .gitignore files from the command-line"
+authors = ["Andrew Ross <andrew.ross.mail@gmail.com>"]
+license = "MIT"
+keywords = ["cli", "git", "gitignore", "config"]
+categories = ["command-line-utilities", "development-tools", "filesystem"]
+readme = "README.md"
+homepage = "https://github.com/andrewrosss/gitig"
+repository = "https://github.com/andrewrosss/gitig"
+documentation = "https://github.com/andrewrosss/gitig"
+exclude = [
+    "todo.*",
+    "t.*",
+    "*.log",
+    "__pycache__",
+]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+name = "gitig"
+path = "src/lib.rs"
+
+[[bin]]
+name = "gi"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+pager = { version = "0.16" }
+reqwest = { version = "0.11", features = ["blocking"] }
