@@ -38,7 +38,7 @@ fn list_endpoint() -> String {
     format!("{}/list", API_URL)
 }
 
-fn create_endpoint(templates: &Vec<String>) -> String {
+fn create_endpoint(templates: &[String]) -> String {
     let templates_str = templates.join(",");
     format!("{}/{}", API_URL, templates_str)
 }
@@ -50,7 +50,7 @@ fn get(url: &str) -> reqwest::Result<reqwest::blocking::Response> {
     client.get(url).send()
 }
 
-fn handle_404(templates: &Vec<String>) -> Result<String> {
+fn handle_404(templates: &[String]) -> Result<String> {
     // try to provide the user with a helpful error message
     if let Ok(known_templates) = list_templates() {
         let unknown_templates = find_unknown_templates(&known_templates, templates);
@@ -62,7 +62,7 @@ fn handle_404(templates: &Vec<String>) -> Result<String> {
     Err(Error::generic())
 }
 
-fn find_unknown_templates(known_templates: &Vec<String>, templates: &Vec<String>) -> Vec<String> {
+fn find_unknown_templates(known_templates: &[String], templates: &[String]) -> Vec<String> {
     // We could convert to HashSets and do a difference, but that would require
     // cloning the known_templates Vec. And since templates is likely < 10, it's
     // probably faster to just iterate over it.
