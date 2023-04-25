@@ -4,7 +4,7 @@ use crate::error::Error;
 use crate::error::Result;
 
 const API_URL: &str = "https://www.toptal.com/developers/gitignore/api";
-// .map_err(|_| Error::fetch_templates_failed())
+
 pub fn list_templates() -> Result<Vec<String>> {
     get(&list_endpoint())
         .and_then(|res| res.text())
@@ -27,11 +27,13 @@ where
         .map(|t| t.to_owned())
         .collect::<Vec<String>>();
     let res = get(&create_endpoint(&templates))?;
-    match res.status() {
-        reqwest::StatusCode::NOT_FOUND => handle_404(&templates),
-        status if status.is_client_error() || status.is_server_error() => Err(Error::generic()),
-        _ => Ok(res.text()?),
+    if res.status().is_client_error() || res.status().is_server_error() {
+        return match res.status() {
+            reqwest::StatusCode::NOT_FOUND => handle_404(&templates),
+            _ => Err(Error::generic()),
+        };
     }
+    Ok(res.text()?)
 }
 
 fn list_endpoint() -> String {
@@ -52,14 +54,14 @@ fn get(url: &str) -> reqwest::Result<reqwest::blocking::Response> {
 
 fn handle_404(templates: &[String]) -> Result<String> {
     // try to provide the user with a helpful error message
-    if let Ok(known_templates) = list_templates() {
-        let unknown_templates = find_unknown_templates(&known_templates, templates);
-        if !unknown_templates.is_empty() {
-            return Err(Error::TemplateNotFound(unknown_templates));
-        }
+    let Ok(known_templates) = list_templates() else { return Err(Error::generic());};
+    let unknown_templates = find_unknown_templates(&known_templates, templates);
+    let err = if !unknown_templates.is_empty() {
+        Error::TemplateNotFound(unknown_templates)
+    } else {
+        Error::generic()
     };
-    // fallback to a generic error
-    Err(Error::generic())
+    Err(err)
 }
 
 fn find_unknown_templates(known_templates: &[String], templates: &[String]) -> Vec<String> {
