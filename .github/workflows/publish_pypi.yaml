@@ -6,7 +6,7 @@ on:
       - created
 
 jobs:
-  wheels:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
