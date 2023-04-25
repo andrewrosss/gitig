@@ -12,9 +12,10 @@ homepage = "https://github.com/andrewrosss/gitig"
 repository = "https://github.com/andrewrosss/gitig"
 documentation = "https://github.com/andrewrosss/gitig"
 exclude = [
-    "todo.*",
-    "t.*",
-    "*.log",
+    ".*",
+    "*.py",
+    "poetry.lock",
+    "pyproject.toml",
     "__pycache__",
 ]
 
