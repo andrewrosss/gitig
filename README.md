@@ -2,7 +2,7 @@
 
 Generate `.gitignore` files from the command-line
 
-[![PyPI Version](https://img.shields.io/pypi/v/gitig.svg)](https://pypi.org/project/gitig/)
+[![PyPI](https://img.shields.io/pypi/v/gitig)](https://pypi.org/project/gitig/) [![Crates.io](https://img.shields.io/crates/v/gitig-rs)](https://crates.io/crates/gitig-rs)
 
 `gitig` writes its output to stdout. Redirect the results to wherever makes sense for you, for example:
 
@@ -11,6 +11,14 @@ gi python > .gitignore
 ```
 
 ## Installation
+
+### With `cargo`
+
+`gitig` has an implementation in Rust (and an implementation in Python) and can be installed via `cargo`:
+
+```bash
+cargo install gitig-rs
+```
 
 ### With `pipx`
 
@@ -135,12 +143,22 @@ jboss   jboss-6-x       jetbrains      jigsaw         jspm
 jboss4  jdeveloper      jetbrains+all  jmeter         julia
 ```
 
+### Rust API
+
+```rust
+gitig::list_templates();  // same as `gi`
+gitig::create(vec!['python', 'jupyter']);  // same as `gi python jupyter`
+gitig::bash_completion();  // same as `gi --completion bash`
+gitig::fish_completion();  // same as `gi --completion fish`
+gitig::VERSION;
+```
+
 ### Python API
 
 ```python
 import gitig
 
-gitig.list()  # same as `gi`
+gitig.list_templates()  # same as `gi`
 gitig.create(['python', 'jupyter'])  # same as `gi python jupyter`
 gitig.bash_completion()  # same as `gi --completion bash`
 gitig.fish_completion()  # same as `gi --completion fish`
@@ -148,6 +166,17 @@ gitig.__version__
 ```
 
 ## Contributing
+
+### Rust
+
+1. Fork the repo
+1. Run `cargo build`
+1. Run `pre-commit install`
+1. Add your changes (adding/updating tests is always nice too)
+1. Commit your changes + push to your fork
+1. Open a PR
+
+### Python
 
 1. Have or install a recent version of `poetry` (version >= 1.1)
 1. Fork the repo
