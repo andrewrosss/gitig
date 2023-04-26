@@ -1,6 +1,6 @@
 [package]
 name = "gitig-rs"
-version = "22.4.0"
+version = "23.4.0"
 edition = "2021"
 description = "Generate .gitignore files from the command-line"
 authors = ["Andrew Ross <andrew.ross.mail@gmail.com>"]
