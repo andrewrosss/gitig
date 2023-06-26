@@ -29,22 +29,22 @@ repos:
           - "--max-line-length=88"
           - "--min-python-version=3.8.1"
   - repo: https://github.com/asottile/reorder_python_imports
-    rev: v3.9.0
+    rev: v3.10.0
     hooks:
       - id: reorder-python-imports
         args: [--py3-plus, "--application-directories=.:src"]
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.3.2
+    rev: v3.7.0
     hooks:
       - id: pyupgrade
         args: [--py36-plus]
   - repo: https://github.com/asottile/add-trailing-comma
-    rev: v2.4.0
+    rev: v2.5.1
     hooks:
       - id: add-trailing-comma
         args: [--py36-plus]
   - repo: https://github.com/asottile/setup-cfg-fmt
-    rev: v2.2.0
+    rev: v2.3.0
     hooks:
       - id: setup-cfg-fmt
   - repo: https://github.com/pre-commit/pygrep-hooks
