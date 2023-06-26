@@ -19,7 +19,7 @@ jobs:
 
       - name: Install Poetry
         run: |
-          export POETRY_VERSION=1.4.2
+          export POETRY_VERSION=1.5.1
           curl -sSL https://install.python-poetry.org | python3 -
           export PATH="${HOME}/.local/bin:$PATH"
           echo "${PATH}" >> "${GITHUB_PATH}"

@@ -27,4 +27,3 @@ jobs:
           VALIDATE_DOCKER: true
           VALIDATE_GO: true
           VALIDATE_ENV: true
-          VALIDATE_RUST: true
