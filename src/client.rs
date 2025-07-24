@@ -54,7 +54,9 @@ fn get(url: &str) -> reqwest::Result<reqwest::blocking::Response> {
 
 fn handle_404(templates: &[String]) -> Result<String> {
     // try to provide the user with a helpful error message
-    let Ok(known_templates) = list_templates() else { return Err(Error::generic());};
+    let Ok(known_templates) = list_templates() else {
+        return Err(Error::generic());
+    };
     let unknown_templates = find_unknown_templates(&known_templates, templates);
     let err = if !unknown_templates.is_empty() {
         Error::TemplateNotFound(unknown_templates)
