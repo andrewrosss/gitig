@@ -1,44 +1,40 @@
-[tool.poetry]
+[project]
 name = "gitig"
 version = "23.4.0"
 description = "Generate .gitignore files from the command-line"
-authors = ["Andrew Ross <andrew.ross.mail@gmail.com>"]
+authors = [{name = "Andrew Ross", email = "andrew.ross.mail@gmail.com"}]
 license = "MIT"
+requires-python = ">= 3.8.1"
 
 readme = "README.md"
 
 keywords = ["cli", "git", "gitignore", "config"]
 
-homepage = "https://github.com/andrewrosss/gitig"
-repository = "https://github.com/andrewrosss/gitig"
-documentation = "https://github.com/andrewrosss/gitig"
-
 classifiers = [
-    "Programming Language :: Python :: 3.0",
-    "License :: OSI Approved :: MIT License",
-    "Intended Audience :: Developers",
-    "Environment :: Console",
-    "Operating System :: OS Independent",
-    "Topic :: Software Development :: Libraries :: Python Modules",
-    "Topic :: Software Development :: User Interfaces",
-    "Topic :: Utilities",
-    "Typing :: Typed",
+  "Programming Language :: Python :: 3.0",
+  "Intended Audience :: Developers",
+  "Environment :: Console",
+  "Operating System :: OS Independent",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Topic :: Software Development :: User Interfaces",
+  "Topic :: Utilities",
+  "Typing :: Typed",
 ]
 
-[tool.poetry.dependencies]
-python = "^3.8.1"
+[dependency-groups]
+dev = [
+  "black >=23.3.0,<24",
+  "flake8 >=6.0.0,<7",
+  "pylint >=2.17.2,<3",
+  "reorder-python-imports >=3.9.0,<4",
+  "bump2version >=1.0.1,<2",
+  "pre-commit >=3.2.2,<4",
+]
 
-[tool.poetry.dev-dependencies]
-black = "^23.3.0"
-flake8 = "^6.0.0"
-pylint = "^2.17.2"
-reorder-python-imports = "^3.9.0"
-bump2version = "^1.0.1"
-pre-commit = "^3.2.2"
-
-[tool.poetry.scripts]
+[project.scripts]
 gi = 'gitig:cli'
 
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+[project.urls]
+Homepage = "https://github.com/andrewrosss/gitig"
+Repository = "https://github.com/andrewrosss/gitig"
+Documentation = "https://github.com/andrewrosss/gitig"
