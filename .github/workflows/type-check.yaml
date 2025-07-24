@@ -6,9 +6,6 @@ jobs:
   build:
     name: "Type Check Code Base"
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
 
     steps:
       - name: Checkout code
@@ -17,7 +14,7 @@ jobs:
       - name: Install the latest version of uv
         uses: astral-sh/setup-uv@v6
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3"
           activate-environment: true
 
       - name: Install dependencies
