@@ -34,6 +34,9 @@ dev = [
 [project.scripts]
 gi = 'gitig:cli'
 
+[tool.uv]
+package = true
+
 [project.urls]
 Homepage = "https://github.com/andrewrosss/gitig"
 Repository = "https://github.com/andrewrosss/gitig"

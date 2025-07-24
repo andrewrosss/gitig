@@ -194,7 +194,7 @@ wheels = [
 [[package]]
 name = "gitig"
 version = "23.4.0"
-source = { virtual = "." }
+source = { editable = "." }
 
 [package.dev-dependencies]
 dev = [
