@@ -14,22 +14,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v6
         with:
           python-version: ${{ matrix.python-version }}
-
-      - name: Install Poetry
-        run: |
-          export POETRY_VERSION=1.5.1
-          curl -sSL https://install.python-poetry.org | python3 -
-          export PATH="${HOME}/.local/bin:$PATH"
-          echo "${PATH}" >> "${GITHUB_PATH}"
-          poetry config virtualenvs.create false
+          activate-environment: true
 
       - name: Install dependencies
         run: |
-          poetry install --no-interaction
+          uv sync
 
       - name: "Set up Node.js"
         uses: actions/setup-node@v4

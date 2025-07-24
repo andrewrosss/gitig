@@ -12,22 +12,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v6
         with:
-          python-version: "3.x"
+          python-version: "3"
+          activate-environment: true
 
-      - name: Install Poetry
+      - name: Install dependencies
         run: |
-          export POETRY_VERSION=1.5.1
-          curl -sSL https://install.python-poetry.org | python3 -
-          export PATH="${HOME}/.local/bin:$PATH"
-          echo "${PATH}" >> "${GITHUB_PATH}"
-          poetry config virtualenvs.create false
+          uv sync
 
       - name: Build and Publish
         run: |
-          poetry config pypi-token.pypi "$PYPI_TOKEN"
-          poetry publish --build
+          uv build
+          uv publish
         env:
-          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+          UV_PUBLISH_TOKEN: ${{ secrets.PYPI_TOKEN }}
