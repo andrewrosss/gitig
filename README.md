@@ -172,17 +172,16 @@ gitig.__version__
 1. Fork the repo
 1. Run `cargo build`
 1. Run `pre-commit install`
-1. Add your changes (adding/updating tests is always nice too)
+1. Add your changes
 1. Commit your changes + push to your fork
 1. Open a PR
 
 ### Python
 
-1. Have or install a recent version of `poetry` (version >= 1.1)
+1. Have or install a recent version of `uv` ([installation guide](https://docs.astral.sh/uv/getting-started/installation/))
 1. Fork the repo
-1. Setup a virtual environment (however you prefer)
-1. Run `poetry install`
-1. Run `pre-commit install`
-1. Add your changes (adding/updating tests is always nice too)
+1. Run `uv sync`
+1. Run `uv run pre-commit install`
+1. Add your changes
 1. Commit your changes + push to your fork
 1. Open a PR
