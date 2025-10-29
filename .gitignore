@@ -4,6 +4,16 @@ t.*
 *.log
 
 
+### zig ###
+# Zig programming language
+
+zig-cache/
+.zig-cache/
+zig-out/
+build/
+build-*/
+docgen_tmp/
+
 # Created by https://www.toptal.com/developers/gitignore/api/python,rust,rust-analyzer
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,rust,rust-analyzer
 
